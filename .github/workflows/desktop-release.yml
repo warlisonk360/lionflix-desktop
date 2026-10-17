@@ -1,0 +1,81 @@
+name: Desktop Release
+
+# Gera o AppImage (Linux) e o .exe (Windows) e publica numa Release do GitHub,
+# onde os arquivos ficam disponíveis para download direto.
+#
+# Como publicar uma versão nova:
+#   1. Atualize "version" em package.json (ex.: 0.2.0)
+#   2. git tag v0.2.0 && git push origin v0.2.0
+#   -> a Release "v0.2.0" aparece em /releases com o AppImage e o .exe anexados.
+#
+# Também dá para rodar manualmente (aba Actions -> "Run workflow").
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            args: --linux AppImage
+            files: dist/*.AppImage
+          - os: windows-latest
+            args: --win
+            files: dist/*.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Instalar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Empacotar (${{ matrix.os }})
+        run: pnpm exec electron-builder ${{ matrix.args }} --publish never
+
+      - name: Guardar artefatos
+        uses: actions/upload-artifact@v4
+        with:
+          name: LionFlix-${{ runner.os }}
+          path: ${{ matrix.files }}
+          if-no-files-found: error
+
+  release:
+    name: Publicar Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar artefatos
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Criar Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**
+          draft: false
+          generate_release_notes: true

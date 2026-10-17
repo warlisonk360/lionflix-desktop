@@ -1,0 +1,21 @@
+{
+  "name": "lionflix-desktop",
+  "productName": "LionFlix",
+  "version": "0.1.0",
+  "description": "App desktop do LionFlix (Electron + Chromium)",
+  "main": "main.js",
+  "author": "LionFlix",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "start:local": "LIONFLIX_LOCAL=1 electron .",
+    "dist:linux": "electron-builder --linux AppImage",
+    "dist:win": "electron-builder --win",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^44.8.0",
+    "electron-builder": "^26.15.3"
+  }
+}

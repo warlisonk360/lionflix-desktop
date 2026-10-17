@@ -1,0 +1,10 @@
+# Configurações de projeto do pnpm (pnpm 10+ lê daqui, não do .npmrc).
+#
+# hoisted: o electron-builder precisa de node_modules achatado (sem symlinks).
+nodeLinker: hoisted
+# Não executa o "deps status check" antes de cada script.
+verifyDepsBeforeRun: false
+# O Electron e o electron-winstaller precisam rodar scripts de instalação.
+# Nesta pasta isolada (apenas ferramentas de build) isso equivale ao
+# comportamento padrão do npm.
+dangerouslyAllowAllBuilds: true

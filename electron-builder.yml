@@ -1,0 +1,30 @@
+appId: com.lionflix.desktop
+productName: LionFlix
+
+directories:
+  output: dist
+  buildResources: build
+
+files:
+  - main.js
+  - preload.js
+  - package.json
+
+linux:
+  target:
+    - AppImage
+  category: Video
+  maintainer: LionFlix
+  synopsis: App desktop do LionFlix
+
+win:
+  target:
+    - nsis
+    - portable
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+
+# Coloque um PNG 512x512 em desktop/build/icon.png para usar seu próprio ícone.
+# Sem ele, o electron-builder usa o ícone padrão do Electron.
