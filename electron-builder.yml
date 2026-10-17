@@ -10,6 +10,14 @@ files:
   - preload.js
   - package.json
 
+# Auto-update: gera os metadados (latest-linux.yml / latest.yml) apontando
+# para as Releases deste repositório público. O app lê esses arquivos para
+# saber qual é a versão mais nova disponível.
+publish:
+  provider: github
+  owner: warlisonk360
+  repo: lionflix-desktop
+
 linux:
   target:
     - AppImage
@@ -17,14 +25,21 @@ linux:
   maintainer: LionFlix
   synopsis: App desktop do LionFlix
 
+# Nomes de arquivo sem espaços: o "latest.yml" guarda o nome exato do asset,
+# então ele precisa bater com o que foi publicado na Release.
+appImage:
+  artifactName: ${productName}-${version}.AppImage
+
 win:
   target:
     - nsis
     - portable
+  artifactName: ${productName}-Portable-${version}.exe
 
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
+  artifactName: ${productName}-Setup-${version}.exe
 
 # Coloque um PNG 512x512 em desktop/build/icon.png para usar seu próprio ícone.
 # Sem ele, o electron-builder usa o ícone padrão do Electron.

@@ -29,10 +29,16 @@ jobs:
         include:
           - os: ubuntu-latest
             args: --linux AppImage
-            files: dist/*.AppImage
+            files: |
+              dist/*.AppImage
+              dist/*.yml
+              dist/*.blockmap
           - os: windows-latest
             args: --win
-            files: dist/*.exe
+            files: |
+              dist/*.exe
+              dist/*.yml
+              dist/*.blockmap
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
