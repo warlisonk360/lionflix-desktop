@@ -31,14 +31,13 @@ jobs:
             args: --linux AppImage
             files: |
               dist/*.AppImage
-              dist/*.yml
-              dist/*.blockmap
+              dist/latest-linux.yml
           - os: windows-latest
             args: --win
             files: |
               dist/*.exe
-              dist/*.yml
               dist/*.blockmap
+              dist/latest.yml
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
