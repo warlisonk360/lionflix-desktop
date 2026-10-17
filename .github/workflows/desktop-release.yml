@@ -5,8 +5,9 @@ name: Desktop Release
 #
 # Como publicar uma versão nova:
 #   1. Atualize "version" em package.json (ex.: 0.2.0)
-#   2. git tag v0.2.0 && git push origin v0.2.0
-#   -> a Release "v0.2.0" aparece em /releases com o AppImage e o .exe anexados.
+#   2. No site do GitHub: Releases -> Draft a new release -> digite a tag v0.2.0
+#      ("Create new tag: v0.2.0 on publish") -> Publish release
+#   -> o workflow builda e anexa o AppImage e o .exe nessa Release.
 #
 # Também dá para rodar manualmente (aba Actions -> "Run workflow").
 
@@ -37,16 +38,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Usa o Node que já vem instalado no runner (sem actions/setup-node,
+      # que era o passo que estava quebrando o build).
       - name: Instalar pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 11
 
-      - name: Instalar Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
+      - name: Versões (diagnóstico)
+        run: |
+          node -v
+          pnpm -v
 
       - name: Instalar dependências
         run: pnpm install --frozen-lockfile
@@ -64,7 +66,8 @@ jobs:
   release:
     name: Publicar Release
     needs: build
-    if: startsWith(github.ref, 'refs/tags/')
+    # Roda mesmo se um dos builds falhar (publica o que conseguiu gerar).
+    if: ${{ !cancelled() && startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Baixar artefatos
